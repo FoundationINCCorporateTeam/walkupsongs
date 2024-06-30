@@ -3,120 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio List Manager</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        .list-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .list-item input[type="text"], .list-item input[type="number"] {
-            margin-right: 10px;
-        }
-        .list-item button {
-            margin-left: 10px;
-        }
-    </style>
+    <title>Upload Audio File</title>
 </head>
 <body>
-    <h1>Audio List Manager</h1>
-    <div id="audio-form">
-        <input type="text" id="name" placeholder="Name">
-        <input type="file" id="audio-file" accept="audio/*">
-        <input type="number" id="start-time" placeholder="Start Time (seconds)">
-        <input type="number" id="end-time" placeholder="End Time (seconds)">
-        <button onclick="addListItem()">Add</button>
-    </div>
-    <div id="audio-list"></div>
+    <h1>Upload Audio File</h1>
+    <input type="file" id="audio-file" accept="audio/*">
+    <button onclick="uploadAudio()">Upload</button>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script>
         const SUPABASE_URL = 'https://dvsoyesscauzsirtjthh.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2c295ZXNzY2F1enNpcnRqdGhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTQzNTU4NDQsImV4cCI6MjAyOTkzMTg0NH0.3HoGdobfXm7-SJtRSVF7R9kraDNHBFsiEaJunMjwpHk';
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+     async function uploadAudio() {
+            const audioFile = document.getElementById('audio-file').files[0];
 
+            if (audioFile) {
+                try {
+                    const { data, error } = await supabaseClient.storage.from('audio_files').upload(`public/${audioFile.name}`, audioFile);
 
-        let audioList = [];
-
-        document.addEventListener('DOMContentLoaded', fetchAudioList);
-
-        async function fetchAudioList() {
-            let { data, error } = await supabaseClient.from('audio_items').select('*');
-            if (error) {
-                console.error('Error fetching audio list:', error);
-            } else {
-                audioList = data;
-                renderAudioList();
-            }
-        }
-
-       async function addListItem() {
-    const name = document.getElementById('name').value;
-    const audioFile = document.getElementById('audio-file').files[0];
-    const startTime = parseFloat(document.getElementById('start-time').value);
-    const endTime = parseFloat(document.getElementById('end-time').value);
-
-    if (name && audioFile && !isNaN(startTime) && !isNaN(endTime)) {
-        try {
-            const { data, error } = await supabaseClient.storage.from('audio_files').upload(`public/${audioFile.name}`, audioFile);
-            
-            if (error) {
-                console.error('Error uploading audio file:', error);
-                alert('Error uploading audio file. Please check console for details.');
-                return;
-            }
-
-            const audioUrl = data.path; // Save the storage path of the audio file
-
-            const { data: insertedData, error: insertError } = await supabaseClient.from('audio_items').insert([{ name, audio_url: audioUrl, start_time: startTime, end_time: endTime }]);
-
-            if (insertError) {
-                console.error('Error inserting data:', insertError);
-                alert('Error inserting data. Please check console for details.');
-            } else {
-                alert('Audio item added successfully!');
-                // Optionally clear form fields or update UI
-            }
-        } catch (uploadError) {
-            console.error('Upload Error:', uploadError);
-            alert('An error occurred during upload. Please check console for details.');
-        }
-    } else {
-        alert('Please fill out all fields correctly.');
-    }
-}
-        function renderAudioList() {
-            const audioListDiv = document.getElementById('audio-list');
-            audioListDiv.innerHTML = '';
-
-            audioList.forEach((item, index) => {
-                const listItem = document.createElement('div');
-                listItem.className = 'list-item';
-                listItem.innerHTML = `
-                    <span>${item.name}</span>
-                    <button onclick="playAudio(${index})">Play</button>
-                `;
-                audioListDiv.appendChild(listItem);
-            });
-        }
-
-        function playAudio(index) {
-            const item = audioList[index];
-            const { publicURL } = supabaseClient.storage.from('audio_files').getPublicUrl(item.audio_url);
-            const audio = new Audio(publicURL);
-            audio.currentTime = item.start_time;
-
-            audio.addEventListener('timeupdate', () => {
-                if (audio.currentTime >= item.end_time) {
-                    audio.pause();
+                    if (error) {
+                        console.error('Error uploading audio file:', error);
+                        alert('Error uploading audio file. Please check console for details.');
+                    } else {
+                        alert('Audio file uploaded successfully!');
+                    }
+                } catch (uploadError) {
+                    console.error('Upload Error:', uploadError);
+                    alert('An error occurred during upload. Please check console for details.');
                 }
-            });
-
-            audio.play();
+            } else {
+                alert('Please select an audio file to upload.');
+            }
         }
     </script>
 </body>
