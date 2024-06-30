@@ -1,51 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>File Upload to Supabase Storage</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Audio Player with Time Stamp</title>
+<style>
+  .audio-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  .audio-item {
+    margin-bottom: 10px;
+  }
+  audio {
+    margin-top: 5px;
+    display: block;
+  }
+</style>
 </head>
 <body>
-    <h1>File Upload to Supabase Storage</h1>
-    <input type="file" id="file-input">
-    <button onclick="uploadFile()">Upload File</button>
+  <ul class="audio-list" id="audioList">
+    <!-- List items will be added dynamically here -->
+  </ul>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-    <script>
-        const SUPABASE_URL = 'https://dvsoyesscauzsirtjthh.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2c295ZXNzY2F1enNpcnRqdGhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTQzNTU4NDQsImV4cCI6MjAyOTkzMTg0NH0.3HoGdobfXm7-SJtRSVF7R9kraDNHBFsiEaJunMjwpHk';
+  <script>
+    // Function to create a new audio list item
+    function createAudioListItem(text, audioSrc, startTime, endTime) {
+      const listItem = document.createElement('li');
+      listItem.classList.add('audio-item');
 
-const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
-    headers: {
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json',
-        'Accept': 'application/vnd.api+json',
-    },
-});
+      const textElement = document.createElement('span');
+      textElement.textContent = text;
+      listItem.appendChild(textElement);
 
-        async function uploadFile() {
-            const fileInput = document.getElementById('file-input');
-            const file = fileInput.files[0];
+      const audioElement = document.createElement('audio');
+      audioElement.controls = true;
+      audioElement.src = audioSrc;
+      audioElement.addEventListener('click', () => {
+        audioElement.currentTime = startTime;
+        audioElement.play();
+      });
+      listItem.appendChild(audioElement);
 
-            if (!file) {
-                alert('Please select a file to upload.');
-                return;
-            }
+      return listItem;
+    }
 
-            try {
-                const { data, error } = await supabaseClient.storage.from('audio_files').upload(`public/${file.name}`, file);
-                if (error) {
-                    console.error('Error uploading file:', error.message);
-                    alert('Error uploading file. Check console for details.');
-                } else {
-                    console.log('File uploaded successfully:', data);
-                    alert('File uploaded successfully!');
-                }
-            } catch (error) {
-                console.error('Error uploading file:', error.message);
-                alert('Error uploading file. Check console for details.');
-            }
-        }
-    </script>
+    // Example data - you can replace with your own list
+    const audioData = [
+      { text: 'Example Text 1', audioSrc: 'in-slow-motion-inspiring-ambient-lounge-219592.mp3', startTime: 10, endTime: 20 },
+      { text: 'Example Text 2', audioSrc: 'audio2.mp3', startTime: 5, endTime: 25 }
+      // Add more items as needed
+    ];
+
+    // Function to initialize the audio list
+    function initializeAudioList() {
+      const audioList = document.getElementById('audioList');
+
+      audioData.forEach(item => {
+        const listItem = createAudioListItem(item.text, item.audioSrc, item.startTime, item.endTime);
+        audioList.appendChild(listItem);
+      });
+    }
+
+    // Initialize the audio list on page load
+    document.addEventListener('DOMContentLoaded', initializeAudioList);
+  </script>
 </body>
 </html>
