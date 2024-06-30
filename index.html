@@ -33,10 +33,27 @@
     </div>
     <div id="audio-list"></div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script>
+        const SUPABASE_URL = 'https://dvsoyesscauzsirtjthh.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2c295ZXNzY2F1enNpcnRqdGhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTQzNTU4NDQsImV4cCI6MjAyOTkzMTg0NH0.3HoGdobfXm7-SJtRSVF7R9kraDNHBFsiEaJunMjwpHk';
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         let audioList = [];
 
-        function addListItem() {
+        document.addEventListener('DOMContentLoaded', fetchAudioList);
+
+        async function fetchAudioList() {
+            let { data, error } = await supabaseClient.from('audio_items').select('*');
+            if (error) {
+                console.error('Error fetching audio list:', error);
+            } else {
+                audioList = data;
+                renderAudioList();
+            }
+        }
+
+        async function addListItem() {
             const name = document.getElementById('name').value;
             const audioFile = document.getElementById('audio-file').files[0];
             const startTime = parseFloat(document.getElementById('start-time').value);
@@ -44,9 +61,20 @@
 
             if (name && audioFile && !isNaN(startTime) && !isNaN(endTime)) {
                 const audioUrl = URL.createObjectURL(audioFile);
-                audioList.push({ name, audioUrl, startTime, endTime });
+                const { data, error } = await supabaseClient.storage.from('audio_files').upload(`public/${audioFile.name}`, audioFile);
+                if (error) {
+                    console.error('Error uploading audio file:', error);
+                    return;
+                }
 
-                renderAudioList();
+                const { data: insertedData, error: insertError } = await supabaseClient.from('audio_items').insert([{ name, audio_url: data.Key, start_time: startTime, end_time: endTime }]);
+
+                if (insertError) {
+                    console.error('Error inserting data:', insertError);
+                } else {
+                    audioList.push({ name, audio_url: audioUrl, start_time: startTime, end_time: endTime });
+                    renderAudioList();
+                }
             } else {
                 alert('Please fill out all fields correctly.');
             }
@@ -69,11 +97,11 @@
 
         function playAudio(index) {
             const item = audioList[index];
-            const audio = new Audio(item.audioUrl);
-            audio.currentTime = item.startTime;
+            const audio = new Audio(supabaseClient.storage.from('audio_files').getPublicUrl(item.audio_url));
+            audio.currentTime = item.start_time;
 
             audio.addEventListener('timeupdate', () => {
-                if (audio.currentTime >= item.endTime) {
+                if (audio.currentTime >= item.end_time) {
                     audio.pause();
                 }
             });
