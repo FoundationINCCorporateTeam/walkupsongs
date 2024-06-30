@@ -54,38 +54,41 @@
             }
         }
 
-        async function addListItem() {
-            const name = document.getElementById('name').value;
-            const audioFile = document.getElementById('audio-file').files[0];
-            const startTime = parseFloat(document.getElementById('start-time').value);
-            const endTime = parseFloat(document.getElementById('end-time').value);
+       async function addListItem() {
+    const name = document.getElementById('name').value;
+    const audioFile = document.getElementById('audio-file').files[0];
+    const startTime = parseFloat(document.getElementById('start-time').value);
+    const endTime = parseFloat(document.getElementById('end-time').value);
 
-            if (name && audioFile && !isNaN(startTime) && !isNaN(endTime)) {
-                try {
-                    const { data, error } = await supabaseClient.storage.from('audio_files').upload(`public/${audioFile.name}`, audioFile);
-                    if (error) {
-                        console.error('Error uploading audio file:', error);
-                        return;
-                    }
-
-                    const audioUrl = data.path; // Save the storage path of the audio file
-
-                    const { data: insertedData, error: insertError } = await supabaseClient.from('audio_items').insert([{ name, audio_url: audioUrl, start_time: startTime, end_time: endTime }]);
-
-                    if (insertError) {
-                        console.error('Error inserting data:', insertError);
-                    } else {
-                        audioList.push({ name, audio_url: audioUrl, start_time: startTime, end_time: endTime });
-                        renderAudioList();
-                    }
-                } catch (uploadError) {
-                    console.error('Upload Error:', uploadError);
-                }
-            } else {
-                alert('Please fill out all fields correctly.');
+    if (name && audioFile && !isNaN(startTime) && !isNaN(endTime)) {
+        try {
+            const { data, error } = await supabaseClient.storage.from('audio_files').upload(`public/${audioFile.name}`, audioFile);
+            
+            if (error) {
+                console.error('Error uploading audio file:', error);
+                alert('Error uploading audio file. Please check console for details.');
+                return;
             }
-        }
 
+            const audioUrl = data.path; // Save the storage path of the audio file
+
+            const { data: insertedData, error: insertError } = await supabaseClient.from('audio_items').insert([{ name, audio_url: audioUrl, start_time: startTime, end_time: endTime }]);
+
+            if (insertError) {
+                console.error('Error inserting data:', insertError);
+                alert('Error inserting data. Please check console for details.');
+            } else {
+                alert('Audio item added successfully!');
+                // Optionally clear form fields or update UI
+            }
+        } catch (uploadError) {
+            console.error('Upload Error:', uploadError);
+            alert('An error occurred during upload. Please check console for details.');
+        }
+    } else {
+        alert('Please fill out all fields correctly.');
+    }
+}
         function renderAudioList() {
             const audioListDiv = document.getElementById('audio-list');
             audioListDiv.innerHTML = '';
