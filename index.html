@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Audio Player with Time Stamp</title>
+<title>Audio Player with Custom Control</title>
 <style>
   .audio-list {
     list-style-type: none;
@@ -12,9 +12,12 @@
   .audio-item {
     margin-bottom: 10px;
   }
-  audio {
-    margin-top: 5px;
-    display: block;
+  .play-button {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
   }
 </style>
 </head>
@@ -33,13 +36,15 @@
       textElement.textContent = text;
       listItem.appendChild(textElement);
 
-      const audioElement = document.createElement('audio');
-      audioElement.controls = true;
+      const audioElement = new Audio();
       audioElement.src = audioSrc;
 
-      // Add event listener to play audio from specified start time and stop at end time
-      audioElement.addEventListener('play', function() {
+      const playButton = document.createElement('button');
+      playButton.textContent = 'Play';
+      playButton.classList.add('play-button');
+      playButton.addEventListener('click', function() {
         audioElement.currentTime = startTime;
+        audioElement.play();
         const playTimer = setInterval(() => {
           if (audioElement.currentTime >= endTime) {
             audioElement.pause();
@@ -48,14 +53,14 @@
         }, 100);
       });
 
-      listItem.appendChild(audioElement);
+      listItem.appendChild(playButton);
 
       return listItem;
     }
 
     // Example data - you can replace with your own list
     const audioData = [
-      { text: 'Example Text 1', audioSrc: 'in-slow-motion-inspiring-ambient-lounge-219592.mp3', startTime: 10, endTime: 30 },
+      { text: 'Test Walk Up Song', audioSrc: 'in-slow-motion-inspiring-ambient-lounge-219592.mp3', startTime: 10, endTime: 30 },
       { text: 'Example Text 2', audioSrc: 'audio2.mp3', startTime: 5, endTime: 25 }
       // Add more items as needed
     ];
