@@ -36,10 +36,18 @@
       const audioElement = document.createElement('audio');
       audioElement.controls = true;
       audioElement.src = audioSrc;
-      audioElement.addEventListener('click', () => {
+
+      // Add event listener to play audio from specified start time and stop at end time
+      audioElement.addEventListener('play', function() {
         audioElement.currentTime = startTime;
-        audioElement.play();
+        const playTimer = setInterval(() => {
+          if (audioElement.currentTime >= endTime) {
+            audioElement.pause();
+            clearInterval(playTimer);
+          }
+        }, 100);
       });
+
       listItem.appendChild(audioElement);
 
       return listItem;
@@ -47,7 +55,7 @@
 
     // Example data - you can replace with your own list
     const audioData = [
-      { text: 'Example Text 1', audioSrc: 'in-slow-motion-inspiring-ambient-lounge-219592.mp3', startTime: 10, endTime: 20 },
+      { text: 'Example Text 1', audioSrc: 'in-slow-motion-inspiring-ambient-lounge-219592.mp3', startTime: 10, endTime: 30 },
       { text: 'Example Text 2', audioSrc: 'audio2.mp3', startTime: 5, endTime: 25 }
       // Add more items as needed
     ];
