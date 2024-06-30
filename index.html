@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio List Manager</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .list-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .list-item input[type="text"], .list-item input[type="number"] {
+            margin-right: 10px;
+        }
+        .list-item button {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Audio List Manager</h1>
+    <div id="audio-form">
+        <input type="text" id="name" placeholder="Name">
+        <input type="file" id="audio-file" accept="audio/*">
+        <input type="number" id="start-time" placeholder="Start Time (seconds)">
+        <input type="number" id="end-time" placeholder="End Time (seconds)">
+        <button onclick="addListItem()">Add</button>
+    </div>
+    <div id="audio-list"></div>
+
+    <script>
+        let audioList = [];
+
+        function addListItem() {
+            const name = document.getElementById('name').value;
+            const audioFile = document.getElementById('audio-file').files[0];
+            const startTime = parseFloat(document.getElementById('start-time').value);
+            const endTime = parseFloat(document.getElementById('end-time').value);
+
+            if (name && audioFile && !isNaN(startTime) && !isNaN(endTime)) {
+                const audioUrl = URL.createObjectURL(audioFile);
+                audioList.push({ name, audioUrl, startTime, endTime });
+
+                renderAudioList();
+            } else {
+                alert('Please fill out all fields correctly.');
+            }
+        }
+
+        function renderAudioList() {
+            const audioListDiv = document.getElementById('audio-list');
+            audioListDiv.innerHTML = '';
+
+            audioList.forEach((item, index) => {
+                const listItem = document.createElement('div');
+                listItem.className = 'list-item';
+                listItem.innerHTML = `
+                    <span>${item.name}</span>
+                    <button onclick="playAudio(${index})">Play</button>
+                `;
+                audioListDiv.appendChild(listItem);
+            });
+        }
+
+        function playAudio(index) {
+            const item = audioList[index];
+            const audio = new Audio(item.audioUrl);
+            audio.currentTime = item.startTime;
+
+            audio.addEventListener('timeupdate', () => {
+                if (audio.currentTime >= item.endTime) {
+                    audio.pause();
+                }
+            });
+
+            audio.play();
+        }
+    </script>
+</body>
+</html>
