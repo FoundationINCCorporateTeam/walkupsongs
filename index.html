@@ -39,6 +39,7 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2c295ZXNzY2F1enNpcnRqdGhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTQzNTU4NDQsImV4cCI6MjAyOTkzMTg0NH0.3HoGdobfXm7-SJtRSVF7R9kraDNHBFsiEaJunMjwpHk';
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+
         let audioList = [];
 
         document.addEventListener('DOMContentLoaded', fetchAudioList);
@@ -67,12 +68,14 @@
                         return;
                     }
 
-                    const { data: insertedData, error: insertError } = await supabaseClient.from('audio_items').insert([{ name, audio_url: data.path, start_time: startTime, end_time: endTime }]);
+                    const audioUrl = data.path; // Save the storage path of the audio file
+
+                    const { data: insertedData, error: insertError } = await supabaseClient.from('audio_items').insert([{ name, audio_url: audioUrl, start_time: startTime, end_time: endTime }]);
 
                     if (insertError) {
                         console.error('Error inserting data:', insertError);
                     } else {
-                        audioList.push({ name, audio_url: data.path, start_time: startTime, end_time: endTime });
+                        audioList.push({ name, audio_url: audioUrl, start_time: startTime, end_time: endTime });
                         renderAudioList();
                     }
                 } catch (uploadError) {
