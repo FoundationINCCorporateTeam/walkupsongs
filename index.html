@@ -3,44 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Audio File</title>
+    <title>File Upload to Supabase Storage</title>
 </head>
 <body>
-    <h1>Upload Audio File</h1>
-    <input type="file" id="audio-file" accept="audio/*">
-    <button onclick="uploadAudio()">Upload</button>
+    <h1>File Upload to Supabase Storage</h1>
+    <input type="file" id="file-input">
+    <button onclick="uploadFile()">Upload File</button>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <script>
-        // Replace with your Supabase access keys
-        const supabaseUrl = 'https://dvsoyesscauzsirtjthh.supabase.co';
-        const ACCESS_KEY_ID = '1ba7d8666a52d4ef367729c052a8a8cf';
-        const ACCESS_KEY_SECRET = '60c504e1de6cb8035fa7b208daa1171cd954907507c0839e15f3583e0cbd62eb';
+        const SUPABASE_URL = 'https://dvsoyesscauzsirtjthh.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2c295ZXNzY2F1enNpcnRqdGhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTQzNTU4NDQsImV4cCI6MjAyOTkzMTg0NH0.3HoGdobfXm7-SJtRSVF7R9kraDNHBFsiEaJunMjwpHk';
 
-        // Construct Supabase URL with access keys
-        const supabaseKey = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImR2c295ZXNzY2F1enNpcnRqdGhoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTQzNTU4NDQsImV4cCI6MjAyOTkzMTg0NH0.3HoGdobfXm7-SJtRSVF7R9kraDNHBFsiEaJunMjwpHk`;
+        const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        const supabaseClient = window.supabase.createClient(`${supabaseUrl}/${supabaseKey}`);
+        async function uploadFile() {
+            const fileInput = document.getElementById('file-input');
+            const file = fileInput.files[0];
 
-        async function uploadAudio() {
-            const audioFile = document.getElementById('audio-file').files[0];
+            if (!file) {
+                alert('Please select a file to upload.');
+                return;
+            }
 
-            if (audioFile) {
-                try {
-                    const { data, error } = await supabaseClient.storage.from('audio_files').upload(`public/${audioFile.name}`, audioFile);
-
-                    if (error) {
-                        console.error('Error uploading audio file:', error);
-                        alert('Error uploading audio file. Please check console for details.');
-                    } else {
-                        alert('Audio file uploaded successfully!');
-                    }
-                } catch (uploadError) {
-                    console.error('Upload Error:', uploadError);
-                    alert('An error occurred during upload. Please check console for details.');
+            try {
+                const { data, error } = await supabaseClient.storage.from('audio_files').upload(`public/${file.name}`, file);
+                if (error) {
+                    console.error('Error uploading file:', error.message);
+                    alert('Error uploading file. Check console for details.');
+                } else {
+                    console.log('File uploaded successfully:', data);
+                    alert('File uploaded successfully!');
                 }
-            } else {
-                alert('Please select an audio file to upload.');
+            } catch (error) {
+                console.error('Error uploading file:', error.message);
+                alert('Error uploading file. Check console for details.');
             }
         }
     </script>
