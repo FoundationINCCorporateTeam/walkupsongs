@@ -3,25 +3,48 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Audio Player with Custom Control</title>
+<title>Walk up Songs</title>
 <style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    padding: 20px;
+  }
   .audio-list {
     list-style-type: none;
     padding: 0;
   }
   .audio-item {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  .audio-item span {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    display: block;
     margin-bottom: 10px;
   }
   .play-button {
     background-color: #007bff;
     color: #fff;
     border: none;
-    padding: 5px 10px;
+    padding: 10px 20px;
+    border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  .play-button:hover {
+    background-color: #0056b3;
   }
 </style>
 </head>
 <body>
+  <h1>Walkup Songs</h1>
+
   <ul class="audio-list" id="audioList">
     <!-- List items will be added dynamically here -->
   </ul>
@@ -60,7 +83,7 @@
 
     // Example data - you can replace with your own list
     const audioData = [
-      { text: 'Test Walk Up Song', audioSrc: 'in-slow-motion-inspiring-ambient-lounge-219592.mp3', startTime: 10, endTime: 30 },
+      { text: 'Test walk up song', audioSrc: 'in-slow-motion-inspiring-ambient-lounge-219592.mp3', startTime: 10, endTime: 30 },
       { text: 'Example Text 2', audioSrc: 'audio2.mp3', startTime: 5, endTime: 25 }
       // Add more items as needed
     ];
