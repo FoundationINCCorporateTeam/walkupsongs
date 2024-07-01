@@ -28,7 +28,11 @@
     display: block;
     margin-bottom: 10px;
   }
-  .play-button {
+  .button-container {
+    display: flex;
+    gap: 10px;
+  }
+  .button {
     background-color: #007bff;
     color: #fff;
     border: none;
@@ -37,7 +41,7 @@
     cursor: pointer;
     transition: background-color 0.3s;
   }
-  .play-button:hover {
+  .button:hover {
     background-color: #0056b3;
   }
 </style>
@@ -62,9 +66,12 @@
       const audioElement = new Audio();
       audioElement.src = audioSrc;
 
+      const buttonContainer = document.createElement('div');
+      buttonContainer.classList.add('button-container');
+
       const playButton = document.createElement('button');
       playButton.textContent = 'Play';
-      playButton.classList.add('play-button');
+      playButton.classList.add('button');
       playButton.addEventListener('click', function() {
         audioElement.currentTime = startTime;
         audioElement.play();
@@ -76,25 +83,34 @@
         }, 100);
       });
 
-      listItem.appendChild(playButton);
+      const pauseButton = document.createElement('button');
+      pauseButton.textContent = 'Pause';
+      pauseButton.classList.add('button');
+      pauseButton.addEventListener('click', function() {
+        audioElement.pause();
+      });
+
+      buttonContainer.appendChild(playButton);
+      buttonContainer.appendChild(pauseButton);
+      listItem.appendChild(buttonContainer);
 
       return listItem;
     }
 
     // Example data - you can replace with your own list
     const audioData = [
-                  { text: 'Ava 30', audioSrc: 'This Is It.mp3', startTime: 41, endTime: 59 },
-                  { text: 'Kelsey 47', audioSrc: 'This Is It.mp3', startTime: 41, endTime: 59 },
-                  { text: 'Emmy 4', audioSrc: 'This Is It.mp3', startTime: 41, endTime: 59 },
-                  { text: 'Daphne 21', audioSrc: 'This Is It.mp3', startTime: 41, endTime: 59 },
-                        { text: 'Allison 31', audioSrc: 'This Is It.mp3', startTime: 41, endTime: 59 },
-                        { text: 'Katy 55', audioSrc: 'This Is It.mp3', startTime: 41, endTime: 59 },
-                        { text: 'Luca 49', audioSrc: 'This Is It.mp3', startTime: 41, endTime: 59 },
-                        { text: 'Millie 3', audioSrc: 'This Is It.mp3', startTime: 41, endTime: 59 },
-            { text: 'Laney 41', audioSrc: 'This Is It.mp3', startTime: 41, endTime: 59 },
-            { text: 'Maiya 56', audioSrc: 'This Is It.mp3', startTime: 41, endTime: 59 },
-            { text: 'Sophie 54', audioSrc: 'This Is It.mp3', startTime: 41, endTime: 59 },
-            { text: 'Nora 14', audioSrc: 'Eyes Closed.mp3', startTime: 41, endTime: 59 }
+      { text: 'Ava 30', audioSrc: 'This Is It.mp3', startTime: 41, endTime: 59 },
+      { text: 'Kelsey 47', audioSrc: 'This Is It.mp3', startTime: 41, endTime: 59 },
+      { text: 'Emmy 4', audioSrc: 'This Is It.mp3', startTime: 41, endTime: 59 },
+      { text: 'Daphne 21', audioSrc: 'This Is It.mp3', startTime: 41, endTime: 59 },
+      { text: 'Allison 31', audioSrc: 'This Is It.mp3', startTime: 41, endTime: 59 },
+      { text: 'Katy 55', audioSrc: 'This Is It.mp3', startTime: 41, endTime: 59 },
+      { text: 'Luca 49', audioSrc: 'This Is It.mp3', startTime: 41, endTime: 59 },
+      { text: 'Millie 3', audioSrc: 'This Is It.mp3', startTime: 41, endTime: 59 },
+      { text: 'Laney 41', audioSrc: 'This Is It.mp3', startTime: 41, endTime: 59 },
+      { text: 'Maiya 56', audioSrc: 'This Is It.mp3', startTime: 41, endTime: 59 },
+      { text: 'Sophie 54', audioSrc: 'This Is It.mp3', startTime: 41, endTime: 59 },
+      { text: 'Nora 14', audioSrc: 'Eyes Closed.mp3', startTime: 41, endTime: 59 }
       // Add more items as needed
     ];
 
