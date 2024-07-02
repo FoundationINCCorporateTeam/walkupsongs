@@ -53,10 +53,11 @@
 </head>
 <body>
   <h1>10U OMGAA Asteroids Walkup Songs</h1>
-  <h3 style="text-align: center;">Made by Nolan Idle</h3>
+
   <ul class="audio-list" id="audioList">
     <!-- List items will be added dynamically here -->
   </ul>
+  <p>Made by Nolan I.</p>
 
   <div class="album-controls">
     <button id="playAllButton" class="button">Play Warm-Up Album</button>
@@ -68,7 +69,6 @@
   <script>
     let currentAudio = null;
     let currentIndex = 0;
-    let albumTimeout = null;
 
     // Function to create a new audio list item
     function createAudioListItem(text, audioSrc, startTime, endTime) {
@@ -155,7 +155,7 @@
       { text: 'Immortals', audioSrc: 'Immortals.mp3' },
       { text: 'We Didn’t Start The Fire', audioSrc: 'We Didn’t Start The Fire.mp3' },
       { text: 'Centuries', audioSrc: 'Centuries.mp3' },
-      { text: 'Parachute', audioSrc: 'Parachute.mp3' }
+      { text: 'Parachute', audioSrc: 'parachute.mp3' }
     ];
 
     // Function to initialize the audio list
@@ -170,7 +170,9 @@
 
     // Function to play all album songs in sequence
     function playAlbum(albumData, index = 0) {
-      if (index >= albumData.length) return;
+      if (index >= albumData.length) {
+        index = 0;
+      }
 
       if (currentAudio) {
         currentAudio.pause();
@@ -180,6 +182,7 @@
       audioElement.src = albumData[index].audioSrc;
       currentAudio = audioElement;
 
+      currentIndex = index;
       audioElement.play();
       audioElement.addEventListener('ended', () => {
         playAlbum(albumData, index + 1);
@@ -195,17 +198,15 @@
 
     // Function to play the next song in the album
     function nextSong() {
-      if (currentIndex < albumData.length - 1) {
-        currentIndex++;
-        playAlbum(albumData, currentIndex);
-      }
+      playAlbum(albumData, currentIndex + 1);
     }
 
     // Function to play the previous song in the album
     function prevSong() {
       if (currentIndex > 0) {
-        currentIndex--;
-        playAlbum(albumData, currentIndex);
+        playAlbum(albumData, currentIndex - 1);
+      } else {
+        playAlbum(albumData, albumData.length - 1);
       }
     }
 
