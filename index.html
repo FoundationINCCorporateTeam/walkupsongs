@@ -52,7 +52,7 @@
   <ul class="audio-list" id="audioList">
     <!-- List items will be added dynamically here -->
   </ul>
-<p>Made by Nolan I.</p>
+  <p>Made by Nolan I.</p>
   <script>
     // Function to create a new audio list item
     function createAudioListItem(text, audioSrc, startTime, endTime) {
@@ -73,14 +73,18 @@
       playButton.textContent = 'Play';
       playButton.classList.add('button');
       playButton.addEventListener('click', function() {
-        audioElement.currentTime = startTime;
+        if (startTime !== undefined) {
+          audioElement.currentTime = startTime;
+        }
         audioElement.play();
-        const playTimer = setInterval(() => {
-          if (audioElement.currentTime >= endTime) {
-            audioElement.pause();
-            clearInterval(playTimer);
-          }
-        }, 100);
+        if (endTime !== undefined) {
+          const playTimer = setInterval(() => {
+            if (audioElement.currentTime >= endTime) {
+              audioElement.pause();
+              clearInterval(playTimer);
+            }
+          }, 100);
+        }
       });
 
       const pauseButton = document.createElement('button');
@@ -100,15 +104,15 @@
     // Example data - you can replace with your own list
     const audioData = [
       { text: 'Ava 30', audioSrc: 'Shut Up and Dance.mp3', startTime: 158, endTime: 180 },
-      { text: 'Kelsey 47', audioSrc: 'Wild Thing (feat. Lita Ford).mp3', startTime: 0, endTime: 30 },
-      { text: 'Emmy 4', audioSrc: 'Primal Scream.mp3', startTime: 70, endTime: 93 },
+      { text: 'Kelsey 47', audioSrc: 'Afraid of the Dark.mp3', startTime: 0, endTime: 30 },
+      { text: 'Emmy 4', audioSrc: 'Bad Blood.mp3', startTime: 70, endTime: 93 },
       { text: 'Daphne 21', audioSrc: 'HandClap.mp3', startTime: 28, endTime: 47 },
-      { text: 'Allison 31', audioSrc: 'Roar.mp3', startTime: 45, endTime: 70 },
-      { text: 'Katy 55', audioSrc: 'Bad Blood.mp3', startTime: 0, endTime: 23 },
+      { text: 'Allison 31', audioSrc: 'Crazy Train.mp3', startTime: 45, endTime: 70 },
+      { text: 'Katy 55', audioSrc: 'This Is It.mp3', startTime: 0, endTime: 23 },
       { text: 'Luca 49', audioSrc: 'Ready For It .mp3', startTime: 142, endTime: 155.5 },
-      { text: 'Millie 3', audioSrc: "Shake It Off (Taylor's Version).mp3", startTime: 42, endTime: 64 },
+      { text: 'Millie 3', audioSrc: 'Shake It Off.mp3', startTime: 42, endTime: 64 },
       { text: 'Lainie 41', audioSrc: 'Thunder.mp3', startTime: 74.5, endTime: 97 },
-      { text: 'Maiya 56', audioSrc: 'Song 2 (2012 Remaster).mp3', startTime: 0, endTime: 30 },// Keep as This is it
+      { text: 'Maiya 56', audioSrc: 'Can’t Catch Me Now (from The Hunger Games- The Ballad of Songbirds & Snakes).mp3', startTime: 0, endTime: 30 },
       { text: 'Sophie 54', audioSrc: 'Crazy Train.mp3', startTime: 0, endTime: 32 },
       { text: 'Nora 14', audioSrc: 'Eyes Closed.mp3', startTime: 33, endTime: 57 },
       { text: 'Pumpup Song 1: Warriors Imagine Dragons', audioSrc: 'Warriors.mp3'},
