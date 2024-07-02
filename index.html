@@ -44,18 +44,26 @@
   .button:hover {
     background-color: #0056b3;
   }
+  .album-controls {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+  }
 </style>
 </head>
 <body>
   <h1>10U OMGAA Asteroids Walkup Songs</h1>
-
+  <h3 style="text-align: center;">Made by Nolan I.</h3>
   <ul class="audio-list" id="audioList">
     <!-- List items will be added dynamically here -->
   </ul>
-  <p>Made by Nolan I.</p>
 
-  <button id="playAllButton" class="button">Play Warm-Up Album</button>
-  <button id="pauseAllButton" class="button">Pause Warm-Up Album</button>
+  <div class="album-controls">
+    <button id="playAllButton" class="button">Play Warm-Up Album</button>
+    <button id="pauseAllButton" class="button">Pause Warm-Up Album</button>
+    <button id="prevSongButton" class="button">Previous Song</button>
+    <button id="nextSongButton" class="button">Next Song</button>
+  </div>
 
   <script>
     let currentAudio = null;
@@ -143,10 +151,11 @@
       { text: 'Circles', audioSrc: 'Circles.mp3' },
       { text: 'Black Smoke Rising', audioSrc: 'Black Smoke Rising.mp3' },
       { text: 'Life is a Highway', audioSrc: 'Life is a Highway.mp3' },
-      { text: 'I Ain\'t Worried', audioSrc: "I Ain't Worried.mp3" },
+      { text: 'I Ain\'t Worried', audioSrc: 'I Ain\'t Worried.mp3' },
       { text: 'Immortals', audioSrc: 'Immortals.mp3' },
       { text: 'We Didn’t Start The Fire', audioSrc: 'We Didn’t Start The Fire.mp3' },
-      { text: 'Centuries', audioSrc: 'Centuries.mp3' }
+      { text: 'Centuries', audioSrc: 'Centuries.mp3' },
+      { text: 'Parachute', audioSrc: 'parachute.mp3' }
     ];
 
     // Function to initialize the audio list
@@ -160,35 +169,43 @@
     }
 
     // Function to play all album songs in sequence
-    function playAlbum(albumData) {
-      currentIndex = 0;
+    function playAlbum(albumData, index = 0) {
+      if (index >= albumData.length) return;
 
-      function playNextSong() {
-        if (currentIndex >= albumData.length) return;
-
-        if (currentAudio) {
-          currentAudio.pause();
-        }
-
-        const audioElement = new Audio();
-        audioElement.src = albumData[currentIndex].audioSrc;
-        currentAudio = audioElement;
-
-        audioElement.play();
-        audioElement.addEventListener('ended', () => {
-          currentIndex++;
-          playNextSong();
-        });
+      if (currentAudio) {
+        currentAudio.pause();
       }
 
-      playNextSong();
+      const audioElement = new Audio();
+      audioElement.src = albumData[index].audioSrc;
+      currentAudio = audioElement;
+
+      audioElement.play();
+      audioElement.addEventListener('ended', () => {
+        playAlbum(albumData, index + 1);
+      });
     }
 
     // Function to pause the current album
     function pauseAlbum() {
       if (currentAudio) {
         currentAudio.pause();
-        clearTimeout(albumTimeout);
+      }
+    }
+
+    // Function to play the next song in the album
+    function nextSong() {
+      if (currentIndex < albumData.length - 1) {
+        currentIndex++;
+        playAlbum(albumData, currentIndex);
+      }
+    }
+
+    // Function to play the previous song in the album
+    function prevSong() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        playAlbum(albumData, currentIndex);
       }
     }
 
@@ -198,9 +215,16 @@
 
       const playAllButton = document.getElementById('playAllButton');
       const pauseAllButton = document.getElementById('pauseAllButton');
+      const nextSongButton = document.getElementById('nextSongButton');
+      const prevSongButton = document.getElementById('prevSongButton');
 
-      playAllButton.addEventListener('click', () => playAlbum(albumData));
+      playAllButton.addEventListener('click', () => {
+        currentIndex = 0;
+        playAlbum(albumData);
+      });
       pauseAllButton.addEventListener('click', pauseAlbum);
+      nextSongButton.addEventListener('click', nextSong);
+      prevSongButton.addEventListener('click', prevSong);
     });
   </script>
 </body>
