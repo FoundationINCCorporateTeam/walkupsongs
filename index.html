@@ -47,29 +47,24 @@
   .album-controls {
     margin-top: 20px;
     display: flex;
-    flex-direction: column;
     gap: 10px;
-  }
-  .album-controls .button-container {
-    flex-direction: row;
   }
 </style>
 </head>
 <body>
   <h1>10U OMGAA Asteroids Walkup Songs</h1>
 
+  <ul class="audio-list" id="audioList">
+    <!-- List items will be added dynamically here -->
+  </ul>
+  <p>Made by Nolan I.</p>
+
   <div class="album-controls">
-    <button id="pauseAllSongsButton" class="button">Pause All Songs</button>
     <button id="playAllButton" class="button">Play Warm-Up Album</button>
     <button id="pauseAllButton" class="button">Pause Warm-Up Album</button>
     <button id="prevSongButton" class="button">Previous Song</button>
     <button id="nextSongButton" class="button">Next Song</button>
   </div>
-
-  <ul class="audio-list" id="audioList">
-    <!-- List items will be added dynamically here -->
-  </ul>
-  <p>Made by Nolan I.</p>
 
   <script>
     let currentAudio = null;
@@ -201,16 +196,7 @@
       }
     }
 
-    // Function to pause all songs
-    function pauseAllSongs() {
-      pauseAlbum();
-      const allAudioElements = document.querySelectorAll('audio');
-      allAudioElements.forEach(audio => {
-        audio.pause();
-      });
-    }
-
-    // Function to play the next song in the     // Function to play the next song in the album
+    // Function to play the next song in the album
     function nextSong() {
       playAlbum(albumData, currentIndex + 1);
     }
@@ -232,18 +218,15 @@
       const pauseAllButton = document.getElementById('pauseAllButton');
       const nextSongButton = document.getElementById('nextSongButton');
       const prevSongButton = document.getElementById('prevSongButton');
-      const pauseAllSongsButton = document.getElementById('pauseAllSongsButton');
 
       playAllButton.addEventListener('click', () => {
         currentIndex = 0;
         playAlbum(albumData);
       });
       pauseAllButton.addEventListener('click', pauseAlbum);
-      pauseAllSongsButton.addEventListener('click', pauseAllSongs);
       nextSongButton.addEventListener('click', nextSong);
       prevSongButton.addEventListener('click', prevSong);
     });
   </script>
 </body>
 </html>
-
